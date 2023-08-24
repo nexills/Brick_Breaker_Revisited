@@ -16,6 +16,7 @@ public class Ball : MonoBehaviour {
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         switch(Info.diff) {
+            // setting speed depending on difficulty chosen
             case 0:
                 speed = 345;
                 break;
@@ -36,24 +37,21 @@ public class Ball : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // behaviours when game is not in play
         if(!inPlay) {
             rb.velocity = Vector2.zero;
             transform.position = paddle.position + new Vector3(0,1,0);
 
         }
         if (gm.gameover) return;
+        // starting the game
         if (!inPlay && Input.GetButtonDown("Jump")) {
             inPlay = true;
             rb.AddForce(Vector2.up * speed);
         }
-        if (inPlay && Input.GetButtonDown("Fire1")) {
-            // when the ball get stuck
-            if (transform.position.x < -9.7 || transform.position.x > 9.7) {
-                inPlay = false;
-            }
-        }
     }
 
+    // detect if ball left screen
     void OnTriggerEnter2D(Collider2D other) {
         if (other.CompareTag("Bottom")) {
             inPlay = false;

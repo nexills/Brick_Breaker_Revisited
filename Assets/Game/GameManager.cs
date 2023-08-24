@@ -12,23 +12,27 @@ public class GameManager : MonoBehaviour {
      * coin: some bricks give coins; get extra lives once enough coin
      * is saved up
      */
+    // integers storing current gameplay values
     public int lives;
     public int score;
     public int coin;
-    public int coin_to_live; // # of coins to become 1 life
+    public int coin_to_live; // # of coins to exchange for 1 life
+    int bricks;
+    int current_level = 1;
+    // text displayed on screen
     public TMP_Text scoretext;
     public TMP_Text cointext;
     public TMP_Text final;
     public TMP_Text result;
     public bool gameover;
     public GameObject screen;
-    int bricks;
+    // references to types of brick (for spawning purposes)
     public GameObject brick; // reference to a brick
     public GameObject spawnbrick; // reference to a spawn brick
     public GameObject coinbrick;
     public GameObject scorebrick;
-    int current_level = 1;
 
+    // storing the pre-set bricks for different levels
     public GameObject ball;
     public GameObject Endless;
     public GameObject L1;
@@ -37,6 +41,7 @@ public class GameManager : MonoBehaviour {
     public GameObject L4;
     public GameObject L5;
 
+    // the number of lives displayed graphically
     public Image[] hearts;
 
     // Start is called before the first frame update
@@ -52,6 +57,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case 3:
                 // random mode
+                // spawn bricks in this mode
                 lives = 3;
                 GameObject temp;
                 for (int i = 0; i < 30; i++) {
@@ -69,6 +75,7 @@ public class GameManager : MonoBehaviour {
                 }
                 break;
         }
+        // set the number of lives graphically
         for (int i = 0; i < lives; i++) {
             hearts[i].enabled = true;
         }
@@ -77,12 +84,6 @@ public class GameManager : MonoBehaviour {
         }
         bricks = GameObject.FindGameObjectsWithTag("Brick").Length;
     }
-
-    // Update is called once per frame
-    void Update() {
-
-    }
-
 
     // these three functions are called to change live, score and coin
     public void updateLive(int change) {
@@ -98,6 +99,7 @@ public class GameManager : MonoBehaviour {
             GameOver();
         }
     }
+
     public void updateScore(int change) {
         score += change;
         scoretext.text = "Score: " + score;
@@ -113,10 +115,9 @@ public class GameManager : MonoBehaviour {
         cointext.text = "Coins: " + coin + "/" + coin_to_live;
     }
 
-
     public void spawn() {
         // spawn up to 10 extra normal bricks
-        if (Info.Gamemode == 1 || Info.Gamemode == 3) {
+        if (Info.Gamemode != 2) {
             GameObject temp;
             Vector2 temp_vector;
             for (int i = 0; i < 10; i++) {
@@ -125,115 +126,132 @@ public class GameManager : MonoBehaviour {
                 temp = Instantiate(brick, temp_vector, Quaternion.identity);
                 temp.SetActive(true);
             }
-        } else if (Info.Gamemode == 2) {
+        } else {
+            // in endless mode, spawn all types of bricks
             GameObject temp;
-            Vector2 temp_vector = new Vector2(Random.Range(-7, 7), Random.Range(-3, 4) * 0.5f);
+            GameObject brick_ref;
+            Vector2 temp_vector;
             // in endless mode, always spawn a red brick
             int tries = 0;
-            while (Physics2D.OverlapCircle(temp_vector, 0.4f) != null) {
+            do {
                 temp_vector = new Vector2(Random.Range(-7, 7), Random.Range(-3, 4) * 0.5f);
                 tries++;
-                if (tries >= 100) break; // safety measure
-            }
+                if (tries >= 100) break; // safety measure if screen is almost full
+            } while (Physics2D.OverlapCircle(temp_vector, 0.4f) != null);
             temp = Instantiate(spawnbrick, temp_vector, Quaternion.identity);
             temp.SetActive(true);
+            // spawn different types of bricks
             for (int i = 0; i < 10; i++) {
                 temp_vector = new Vector2(Random.Range(-7, 7), Random.Range(-3, 4) * 0.5f);
                 if (Physics2D.OverlapCircle(temp_vector, 0.4f) != null) continue;
-                // randomly decides type of brick to spawn
-                if (Random.Range(0, 10) <= 8) temp = Instantiate(brick, 
-                    temp_vector, Quaternion.identity);
-                else if (Random.Range(0, 2) == 1) temp = Instantiate(coinbrick,
-                    temp_vector, Quaternion.identity);
-                else temp = Instantiate(scorebrick, temp_vector, Quaternion.identity);
+                int random_int = Random.Range(0, 8);
+                switch (random_int) {
+                    case 0:
+                        brick_ref = coinbrick;
+                        break;
+                    case 1:
+                        brick_ref = scorebrick;
+                        break;
+                    default:
+                        brick_ref = brick;
+                        break;
+                }
+                temp = Instantiate(brick_ref, temp_vector, Quaternion.identity);
                 temp.SetActive(true);
             }
-            
-
         }
         bricks = GameObject.FindGameObjectsWithTag("Brick").Length;
     }
 
-    // change levels
     void GameOver() {
         current_level++;
-        if (Info.Gamemode == 1 && current_level > 5) {
-            // passed all levels
-            gameover = true;
-            screen.SetActive(true);
-            // extra life gives extra point
-            score += 200 * lives;
-            if (score >= Info.classic[Info.diff]) {
-                Info.classic[Info.diff] = score;
-            }
-            result.text = "Game Cleared!";
-            final.text = "Final Score: " + score + '\n' +
-                "High Score: " + Info.classic[Info.diff];
-            return;
-        }
-        else if (Info.Gamemode == 2 && lives <= 0) {
-            // have no life left in endless mode
-            gameover = true;
-            screen.SetActive(true);
-            if (score >= Info.endless[Info.diff]) {
-                Info.endless[Info.diff] = score;
-            }
-            result.text = "Game Over!";
-            final.text = "Final Score: " + score + '\n' +
-                "High Score: " + Info.endless[Info.diff];
-            return;
-        }
-        else if (Info.Gamemode == 1 && lives <= 0) {
-            // have no life left and in classic mode
-            gameover = true;
-            screen.SetActive(true);
-            if (score >= Info.classic[Info.diff]) {
-                Info.classic[Info.diff] = score;
-            }
-            result.text = "Game Over!";
-            final.text = "Final Score: " + score + '\n' +
-                "High Score: " + Info.classic[Info.diff];
-            return;
-        }
-        else if (Info.Gamemode == 3 && lives > 0) {
-            // victory in random mode
-            gameover = true;
-            screen.SetActive(true);
-            // extra life gives extra point
-            score += 200 * lives;
-            result.text = "Game Cleared!";
-            final.text = "Final Score: " + score;
-            return;
-        }
-        else if (Info.Gamemode == 3) {
-            // no life left and in random mode
-            gameover = true;
-            screen.SetActive(true);
-            result.text = "Game Over!";
-            // no high score for random mode
-            final.text = "Final Score: " + score;
-            return;
-
-        }
-        // move on to next level
-        switch(current_level) {
+        // the player loses the game
+        gameover = true;
+        screen.SetActive(true);
+        result.text = "Game Over!";
+        switch (Info.Gamemode) {
+            case 1:
+                // have no life left and in classic mode
+                if (score >= Info.classic[Info.diff]) {
+                    Info.classic[Info.diff] = score;
+                }
+                final.text = "Final Score: " + score + '\n' +
+                    "High Score: " + Info.classic[Info.diff];
+                return;
             case 2:
-                L2.SetActive(true);
-                break;
+                // have no life left in endless mode
+                if (score >= Info.endless[Info.diff]) {
+                    Info.endless[Info.diff] = score;
+                }
+                final.text = "Final Score: " + score + '\n' +
+                    "High Score: " + Info.endless[Info.diff];
+                return;
             case 3:
-                L3.SetActive(true);
-                break;
-            case 4:
-                L4.SetActive(true);
-                break;
-            case 5:
-                L5.SetActive(true);
-                break;
+                // no life left and in random mode
+                // no high score for random mode
+                final.text = "Final Score: " + score;
+                return;
         }
-        ball.GetComponent<Ball>().not_in_play();
-        bricks = GameObject.FindGameObjectsWithTag("Brick").Length;
     }
 
+    void GameClear() {
+        switch(Info.Gamemode) {
+            case 1:
+                // ie. clearing a level
+                switch (current_level) {
+                    case 2:
+                        L2.SetActive(true);
+                        break;
+                    case 3:
+                        L3.SetActive(true);
+                        break;
+                    case 4:
+                        L4.SetActive(true);
+                        break;
+                    case 5:
+                        L5.SetActive(true);
+                        break;
+                    case 6:
+                        // passed all levels
+                        gameover = true;
+                        screen.SetActive(true);
+                        // extra life gives extra point
+                        score += 200 * lives;
+                        if (score >= Info.classic[Info.diff]) {
+                            Info.classic[Info.diff] = score;
+                        }
+                        result.text = "Game Cleared!";
+                        final.text = "Final Score: " + score + '\n' +
+                            "High Score: " + Info.classic[Info.diff];
+                        return;
+                }
+                ball.GetComponent<Ball>().not_in_play();
+                bricks = GameObject.FindGameObjectsWithTag("Brick").Length;
+                return;
+            case 2:
+                // shouldn't happen normally
+                if (score >= Info.endless[Info.diff]) {
+                    Info.endless[Info.diff] = score;
+                }
+                final.text = "Final Score: " + score + '\n' +
+                    "High Score: " + Info.endless[Info.diff];
+                gameover = true;
+                screen.SetActive(true);
+                result.text = "Game Cleared... but how?";
+                return;
+            case 3:
+                // victory in random mode
+                gameover = true;
+                screen.SetActive(true);
+                // extra life gives extra point
+                score += 200 * lives;
+                result.text = "Game Cleared!";
+                final.text = "Final Score: " + score;
+                return;
+        }
+    }
+
+    // public functions for calling
     public void reset() {
         SceneManager.LoadScene("Play");
     }
@@ -244,7 +262,7 @@ public class GameManager : MonoBehaviour {
 
     public void brickHit() {
         bricks -= 1;
-        if (bricks <= 0) GameOver();
+        if (bricks <= 0) GameClear();
     }
 
     public void menu() {
