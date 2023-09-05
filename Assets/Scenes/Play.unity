@@ -3140,6 +3140,9 @@ MonoBehaviour:
   spawnbrick: {fileID: 3418436481387870394, guid: 8a110c2b83438bb408f3ad7cc3463cda, type: 3}
   coinbrick: {fileID: 8341270703682024491, guid: e9e1566725a0c354a9f90c2fd80f16e7, type: 3}
   scorebrick: {fileID: 4489003874079111685, guid: 34f1d9e9aae9d944c974f3f3951894c2, type: 3}
+  top_edge: {fileID: 1809522958}
+  top_trigger: {fileID: 1502905685}
+  top_paddle: {fileID: 872265651}
   ball: {fileID: 1640126614}
   Endless: {fileID: 1927110096}
   L1: {fileID: 1302798478}
@@ -14002,7 +14005,7 @@ Transform:
   m_GameObject: {fileID: 1809522958}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -333.27853, y: -117.80857, z: -5.992252}
+  m_LocalPosition: {x: -334.19, y: -121.49, z: -5.992252}
   m_LocalScale: {x: 1, y: 12, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

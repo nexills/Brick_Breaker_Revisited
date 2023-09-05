@@ -20,6 +20,7 @@ public class Menu : MonoBehaviour
         classic.SetActive(false);
         endless.SetActive(false);
         random.SetActive(false);
+
     }
 
     // Update is called once per frame

@@ -32,6 +32,10 @@ public class GameManager : MonoBehaviour {
     public GameObject coinbrick;
     public GameObject scorebrick;
 
+    public GameObject top_edge;
+    public GameObject top_trigger;
+    public GameObject top_paddle;
+
     // storing the pre-set bricks for different levels
     public GameObject ball;
     public GameObject Endless;
@@ -74,6 +78,18 @@ public class GameManager : MonoBehaviour {
                     temp.SetActive(true);
                 }
                 break;
+        }
+        if (Info.double_paddle) {
+            // play with double_paddle
+            top_edge.SetActive(false);
+            top_trigger.SetActive(true);
+            top_paddle.SetActive(true);
+        } else {
+            // play with single_paddle
+            top_edge.SetActive(true);
+            top_trigger.SetActive(false);
+            top_paddle.SetActive(false);
+
         }
         // set the number of lives graphically
         for (int i = 0; i < lives; i++) {
@@ -172,20 +188,41 @@ public class GameManager : MonoBehaviour {
         switch (Info.Gamemode) {
             case 1:
                 // have no life left and in classic mode
-                if (score >= Info.classic[Info.diff]) {
-                    Info.classic[Info.diff] = score;
+                if (Info.double_paddle) {
+                    if (score >= Info.classic[Info.diff]) {
+                        Info.classic[Info.diff] = score;
+                    }
+                    final.text = "Final Score: " + score + '\n' +
+                        "High Score: " + Info.classic[Info.diff];
+                    return;
+                } else {
+                    if (score >= Info.classic_single[Info.diff]) {
+                        Info.classic_single[Info.diff] = score;
+                    }
+                    final.text = "Final Score: " + score + '\n' +
+                        "High Score: " + Info.classic_single[Info.diff];
+                    return;
+
                 }
-                final.text = "Final Score: " + score + '\n' +
-                    "High Score: " + Info.classic[Info.diff];
-                return;
             case 2:
-                // have no life left in endless mode
-                if (score >= Info.endless[Info.diff]) {
-                    Info.endless[Info.diff] = score;
+                if (Info.double_paddle) {
+                    // have no life left in endless mode
+                    if (score >= Info.endless[Info.diff]) {
+                        Info.endless[Info.diff] = score;
+                    }
+                    final.text = "Final Score: " + score + '\n' +
+                        "High Score: " + Info.endless[Info.diff];
+                    return;
+                } else {
+                    // have no life left in endless mode
+                    if (score >= Info.endless_single[Info.diff]) {
+                        Info.endless_single[Info.diff] = score;
+                    }
+                    final.text = "Final Score: " + score + '\n' +
+                        "High Score: " + Info.endless_single[Info.diff];
+                    return;
+
                 }
-                final.text = "Final Score: " + score + '\n' +
-                    "High Score: " + Info.endless[Info.diff];
-                return;
             case 3:
                 // no life left and in random mode
                 // no high score for random mode
