@@ -6,7 +6,7 @@ This is my take of an implementation of the classic game, Brick Breaker, with a 
 The game is complete. More features may be added in the future.
 
 # Background
-As my first side project, I revisited a classic game concept. Adding on this concept, I added several different brick types and implemented 3 different game modes. Each of these game modes can be played with either 1 paddle (classic style) or 2 paddles (the revisited style)
+As my first side project, I revisited a classic game concept. Adding on this concept, I added several different brick types and implemented 3 different game modes. Each of these game modes can be played with either 1 paddle (classic style) or 2 paddles (the revisited style).
 I decided to implement this project with Unity, which is a popular game development engine in the industry. It provides many tools to creators and streamline the creating process. I wanted to take this chance to learn to use this engine, which is a useful skill to have in the industry.
 Over the course of this project, I learnt and consolidated concepts in both Unity and C#. I also learnt how to build a graphical interface and make the game presentable.
 
