@@ -1,10 +1,13 @@
 # Brick_Breaker_Revisited
 
-# About
 This is my take of an implementation of the classic game, Brick Breaker, with a twist: what if we have two paddles? Compared to the classic game, some extra features in this implementation includes difficulty selection, more gamemodes and more brick types.
 
 # Progress
+<<<<<<< HEAD
 The game is complete. More features may be added in the future.
+=======
+While the main body of the game is complete, there are more features planned, such as adding a standard (one paddle) mode for the game.
+>>>>>>> 34a1e95e1ed951cdc825c8ebfcdf0fcd470f4565
 
 # Background
 As my first side project, I revisited a classic game concept. Adding on this concept, I added several different brick types and implemented 3 different game modes. Each of these game modes can be played with either 1 paddle (classic style) or 2 paddles (the revisited style)
